@@ -1,0 +1,92 @@
+h1{
+    color: white;
+    margin: 20px;
+     text-align: center;
+    text-shadow: 2px 2px 5px #888888;
+    font-family: "Baloo Paaji",verdana,sans-serif;
+}
+nav{
+    background-color: #ede779;
+    overflow: auto;
+    text-align: center;
+    box-shadow: 0 15px 5px #888888;
+}
+.chido{
+   font-family: "Dosis", Sans-Serif;
+
+}
+.submenu{
+    display: none;
+     
+    position: absolute;
+}
+.menu-item:hover .submenu{
+    display: block;
+    animation: miAnimacion;
+    background-color: #45a049;
+    animation-duration: 2s;
+}
+ul{
+    opacity: 0.95;
+    filter: alpha(opacity=50);
+}
+nav ul{
+    padding: 0;
+    margin: 0
+}
+nav li{
+    width: 120px;
+    background-color: #ede779 ;
+    font-family: "Century gothic";
+    text-decoration: none;
+}
+div
+{
+    border-radius: 5px;
+    background-color: #61eda6;
+    padding:  20px;
+    margin:  0 auto;
+}
+body, .default{
+    line-height: 1.6em;
+    font-family: "Lucida, Sans Unicode", "Lucida Grande", "Sans-serif";
+    font-size:  16px;
+    color:#669;
+    background-color:  palegreen;
+}
+#lateral {
+    width: 400px;
+    align-items: center;
+}
+
+input[type=text], select{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border-radius:  4px;
+    box-sizing: border-box;
+}
+input[type=password], select{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border-radius:  4px;
+    box-sizing: border-box;
+}
+input[type=submit]{
+    width: 100%;
+    background-color: slateblue;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius:  4px;
+    cursor: pointer; 
+
+}
+input[type=submit]:hover {
+    background-color:  #45a049;
+}
+

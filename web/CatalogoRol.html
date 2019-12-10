@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Catalogo Rol</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="//code.jquery.com/jquery-1.12.4.js"> </script>
+        <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" >
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script>
+//pintara tabla
+$(document).ready(
+        function () {
+            $('#tbRol').DataTable(
+                    {
+                        "ajax": "ConsultaRol",
+
+                        "columns": [//Atributos que se pondrán en cada columna
+                            {"data": "rolid"},
+                            {"data": "nombrerol"},
+
+                            {"data":
+                                        function (row) {
+                                            var r = row['rolid'] + "-" + row['nombrerol']; //Acceder
+                                            console.log('valor de r' + r);
+                                            var botones = "<button id='btnBorrar' class='btn btn-primary btn-xs' onClick='deleteRol(" + row['rolid'] + ")'>Borrar</button>";
+                                            botones += "<button id='btnEditar' class='btn btn-xs btn-danger' onClick='showRol(" + row['rolid'] + ",\"" + row['nombrerol']
+                                                    + "\")'>Editar</button>";
+                                            return botones;
+                                        }
+                            }
+                        ]
+                    });
+
+
+            //valida los campos
+            $('#frmRol').validate({
+                rules: {
+                    nombrerol: {
+                        required: true
+                    }
+                },
+                messages: {
+                    nombrerol: {
+                        required: "El nombre del rol es requerido"
+                    }
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error');
+                },
+                errorElement: 'span',
+                errorClass: 'help-block',
+                errorPlacement: function (error, element) {
+                    if (element.parent('.input-group'.length)) {
+                        error.insertAfter(element.parent());
+                    } else {
+                        error.insertAfter(element)
+                    }
+                },
+                submitHandler: function (form) {
+                    console.log('Formulario válido');
+                    nuevoRol();
+                    return false;
+                }
+
+
+            });
+
+            //validar forma modal
+            $('#frmRol2').validate({
+                rules: {
+
+                    nombrerol2: {
+                        required: true
+                    }
+                },
+                messages: {
+                    nombrerol2: {
+                        required: "El nombre del rol es requerido"
+                    }
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error');
+                },
+                errorElement: 'span',
+                errorClass: 'help-block',
+                errorPlacement: function (error, element) {
+                    if (element.parent('.input-group'.length)) {
+                        error.insertAfter(element.parent());
+                    } else {
+                        error.insertAfter(element)
+                    }
+                },
+                submitHandler: function (form) {
+                    console.log('Formulario modal válido');
+                    updateRol();
+                    return false;
+                }
+
+
+            });
+
+            //cuando apareza mi showmodal guardar datos en la bd
+            $('#btnEditar').on('click', function () {
+                $('#frmRol2').submit();
+            });
+
+        }); // que se ejecute ya que esté listo
+//FUNCIONES DEL CRUD
+function deleteRol(rolid) {
+
+    //Utilizando Ajax para realizar una petición al servlet que elimina personas
+    $.ajax({
+        url: "EliminaRol", //Url del Servlet
+        type: "POST", //Método HTTP por el que se hace la petición
+        data: {//Es la información que mando al servlet
+            rolid: rolid
+        }
+    }).done(function (json) { //Se ejecuta cuando todo sale bien
+        alert(json.msj);
+
+        //Refrescando la tabla
+        $('#tbRol').dataTable().api().ajax.reload();
+    }).fail(function (json) { //Se ejecuta cuando algo sale mal
+        alert(json.msj);
+
+        //alert("error");
+    });
+}
+
+
+
+//
+function nuevoRol() {
+    $.ajax({
+        url: 'NuevoRol',
+        type: 'POST',
+        data: {
+            rolid: $("#rolid").val(),
+            nombrerol: $("#nombrerol").val()
+
+        }
+    }).done(function (json) { //Se ejecuta cuando todo sale bien
+        alert(json.msj);
+        //Refrescando la tabla
+        $('#tbRol').dataTable().api().ajax.reload();
+    }).fail(function (json) { //Se ejecuta cuando algo sale mal
+        alert(json.msj);
+    });
+
+
+}
+
+function showRol(rolid, nombrerol) {
+    $("#rolid2").val(rolid);
+    $("#nombrerol2").val(nombrerol);
+    $("#modalRol").modal("show");
+
+}
+
+function updateRol() {
+    $.ajax({
+        url: 'ActualizaUsuarioSistema',
+        type: 'POST',
+        data: {
+            idusuariosistema: $("#rolid2").val(),
+            nombrerol: $("#nombrerol2").val()
+
+        }
+    }).done(function (json) { //Se ejecuta cuando todo sale bien
+        alert(json.msj);
+        //Refrescando la tabla
+        $('#tbRol').dataTable().api().ajax.reload();
+
+        //Cerrando el modal
+        $('#modalRol').modal("toggle");
+    }).fail(function (json) { //Se ejecuta cuando algo sale mal
+        alert(json.msj);
+    });
+}
+//
+        </script>
+    </head>
+    <body>
+        <div id="modalRol" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>   
+                        <h3>Modificar Rol</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form class="col-lg-12" id="frmRol2" method="POST">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label class="control-label" for="nombrerol2">Rol</label>
+                                    <div class="input-group cocol-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <span class="input-group-addon">R</span>
+                                        <input class="form-control" id="nombrerol2" name="nombrerol2">
+                                        <input id="rolid2" name="rolid2">
+                                    </div>                                                                          
+                                </div>                                   
+                            </div>    
+                        </form>                      
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnEditar" class="btn btn-sm btn-primary">Guardar</button>
+                    </div>
+                </div>               
+            </div>
+        </div>
+
+        <div>
+            <h1>Rol</h1>
+
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xs-12">
+                <form class="col-lg-12" id="frmRol" method="POST">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="control-label" for="nombrerol">Rol</label>
+                            <div class="input-group cocol-lg-12 col-md-12 col-sm-12 col-xs-12l">
+                                <span class="input-group-addon">Clave</span>
+                                <input class="form-control" id="rolid" name="rolid">
+                            </div>
+                            <div class="input-group cocol-lg-12 col-md-12 col-sm-12 col-xs-12l">
+                                <span class="input-group-addon">Nombre</span>
+                                <input class="form-control" id="nombrerol" name="nombrerol">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div align="right">
+                        <button type="submit" class="btn btn-primary btn-lg">Guardar</button> 
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xs-12">
+                <table id="tbRol" > 
+                    <thead>
+                        <tr>
+                            <th>Clave</th>
+                            <th>Nombre rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
